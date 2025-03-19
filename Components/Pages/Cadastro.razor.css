@@ -1,0 +1,72 @@
+﻿.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.register-box {
+    background-color: white;
+    padding: 2rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.logo {
+    max-width: 100px;
+    margin-bottom: 20px;
+}
+
+EditForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Ensure form takes up full width inside register box */
+}
+
+.formInputclass, .form-control {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 1.0rem 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: center; /* Align labels to the left */
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.cadastrarBtn-class {
+    margin-top: 2rem;
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    padding: 0.5rem 5rem; /* Use responsive padding */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem; /* Responsive font size */
+    color: black;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+}
+
+    .cadastrarBtn-class:hover {
+        background-color: #ff9cbb;
+        transform: scale(1.05);
+    }

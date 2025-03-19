@@ -1,0 +1,17 @@
+﻿@page "/designer"
+@rendermode InteractiveServer
+@layout SweetMagic.Components.Layout.MainLayout
+
+<PageTitle>Sweet Magic - Designer</PageTitle>
+
+
+@code {
+    [CascadingParameter]
+    public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        Layout!.setPageName("Cake Designer");
+        return;
+    }
+}

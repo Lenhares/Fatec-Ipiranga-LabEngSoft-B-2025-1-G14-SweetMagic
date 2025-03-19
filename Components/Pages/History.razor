@@ -1,0 +1,38 @@
+﻿@page "/history"
+@rendermode InteractiveServer
+@layout SweetMagic.Components.Layout.MainLayout
+@inject Services.UserService UserService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Sweet Magic - Your cakes</PageTitle>
+<div class="background-box">
+    <button class="actionBtn" @onclick="ConfirmDelete">Apagar meu cadastro</button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        Layout!.setPageName("Your Cakes");
+    }
+
+    private async Task ConfirmDelete() {
+        bool confirm = await JS.InvokeAsync<bool>("confirm", "Tem certeza que quer deletar todos os seus dados? Não será possível recuperar.");
+        if (confirm) {
+            await DeleteUserData();
+        }
+    }
+
+    private async Task DeleteUserData() {
+        bool success = await UserService.DeleteUserDataAsync(Layout.currentUser.Email!);
+        if (success) {
+            Navigation.NavigateTo("/", forceLoad: true); // Redirect to home
+        }
+        else {
+            // Handle error (e.g., show message)
+        }
+    }
+}

@@ -1,0 +1,67 @@
+﻿.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.login-box {
+    background-color: white;
+    padding: 2rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: center; /* Align labels to the left */
+}
+
+.form-group label {
+    margin-bottom: 0.5rem; /* Space between label and input */
+}
+
+.formInputclass, .form-control {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 1.0rem 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.logo {
+    max-width: 100px;
+    margin-bottom: 20px;
+}
+
+.loginBtn {
+    margin-bottom: 2rem;
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    padding: 0.5rem 5rem; /* Use responsive padding */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem; /* Responsive font size */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+}
+
+.cadastrese {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.loginBtn:hover {
+    background-color: #ff9cbb; /* New background color on hover */
+    transform: scale(1.05); /* Scale up the button slightly */
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 1rem;
+}
