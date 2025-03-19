@@ -106,7 +106,7 @@
             return;
         }
         // Authenticate user using UserService
-        bool isAuthenticated = await UserService!.LoginUserAsync(loginModel.Egithumail!, loginModel.Password!);
+        bool isAuthenticated = await UserService!.LoginUserAsync(loginModel.Email!, loginModel.Password!);
 
         if (isAuthenticated)
         {
