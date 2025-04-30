@@ -1,9 +1,16 @@
-﻿namespace SweetMagic.Models {
-    internal class Camada {
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-        internal string tipo { get; set; }
-        internal int ordem { get; set; }
-        internal string saborMassa { get; set; }
-        internal string saborRecheio { get; set; }
+namespace SweetMagic.Models {
+    public class Camada {
+        [Key]
+        public int Id { get; set; }
+        public string tipo { get; set; }
+        public int ordem { get; set; }
+        public string saborMassa { get; set; }
+        public string saborRecheio { get; set; }
+        public int  BoloId { get; set; }
+        [ForeignKey(nameof(BoloId))]
+        public Bolo Bolo { get; set; }
     }
 }

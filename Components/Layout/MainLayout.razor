@@ -1,7 +1,11 @@
 ﻿@inherits LayoutComponentBase
 @using SweetMagic.Models
+@using MudBlazor
+@using MudBlazor.Services
 @inject NavigationManager NavigationManager
 
+<MudThemeProvider />
+<MudPopoverProvider />
 <div class="page">
     <main>
         <div class="background-image"></div>
@@ -13,10 +17,10 @@
                 <nav class="navbar">
                     <ul class="ulnavbar">
                         <li>
-                            <button class="nav-btn">Criar Bolo</button>
+                            <button class="nav-btn" @onclick="openDesigner">Criar Bolo</button>
                         </li>
                         <li>
-                            <button class="nav-btn">Meus bolos</button>
+                            <button class="nav-btn" @onclick="openHistory">Meus bolos</button>
                         </li>
 
                     </ul>
@@ -73,4 +77,17 @@
         return pageName;
     }
 
+    public void openDesigner() {
+        navBarStatus = "top-row-visible";
+        NavigationManager.NavigateTo("/designer");
+        StateHasChanged();
+        return;
+    }
+
+    public void openHistory() {
+        navBarStatus = "top-row-visible";
+        NavigationManager.NavigateTo("/history");
+        StateHasChanged();
+        return;
+    }
 }

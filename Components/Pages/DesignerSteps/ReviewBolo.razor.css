@@ -1,0 +1,74 @@
+﻿.reviewContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.resumoImg{
+    width: 15rem;
+    height: 15rem;
+}
+
+.resumoRolante {
+    width: 80%;
+    max-width: 100rem;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+    border: 1px solid black; /* Usando a cor da borda dos inputs e botões */
+    border-radius: 5px; /* Usando o raio da borda dos inputs e botões */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem; /* Responsive font size */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+    width: 10rem;
+    height: auto;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    text-align: center;
+}
+
+    .btn.selecionado {
+        border: 3px solid #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .btn:hover {
+        transform: scale(1.05); /* Efeito de zoom no hover */
+    }
+
+.inputCampo {
+    width: 20rem;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    text-align: center;
+}
+
+    .inputCampo:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .inputCampo.erro {
+        border: 2px solid red;
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+

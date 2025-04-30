@@ -1,4 +1,4 @@
-﻿         using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SweetMagic.Models;
 using SweetMagic.Data;
 using SweetMagic.Helpers;

@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using SweetMagic;
 using SweetMagic.Components;
 using SweetMagic.Data;
+using SweetMagic.Helpers;
 using SweetMagic.Services;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //builder.Services.AddDbContext<AppDbContext>(options =>
    // options.UseSqlServer("Server=localhost;Database=SweetMagic;User Id=sweetMagicApp;Password=batataepao2409@;TrustServerCertificate=True;"));
-
-
 
 builder.Services.AddScoped<UserService>();
 
@@ -33,6 +33,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .EnableSensitiveDataLogging()
     .LogTo(Console.WriteLine, LogLevel.Information));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddScoped<BoloService>();
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
@@ -61,3 +63,4 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+

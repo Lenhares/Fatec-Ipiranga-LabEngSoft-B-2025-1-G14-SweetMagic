@@ -1,17 +1,87 @@
 ﻿@page "/designer"
 @rendermode InteractiveServer
 @layout SweetMagic.Components.Layout.MainLayout
+@using SweetMagic.Helpers
+@using SweetMagic.Models
+@inject NavigationManager Navigation
+@inject BoloService BoloService
 
 <PageTitle>Sweet Magic - Designer</PageTitle>
-
+<CascadingValue Value="this">
+    <div class="background-box">
+        <button class="restartBtn" @onclick="Reset">Recomeçar</button>
+        <DynamicComponent Type="@ObterComponenteAtual()" />
+        <div class="navegacaoDesigner">
+            <button class="returnBtn" @onclick="Return" disabled="@(etapaAtualIndex == 1)">Voltar</button>
+            <button class="nextBtn" @onclick="Next" disabled="@(!modeloAtualizado)">Próximo</button>
+        </div>
+    </div>
+</CascadingValue>
 
 @code {
     [CascadingParameter]
     public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+    private List<EtapaDesigner> etapas = EtapaDesigner.GetEtapas();
+    private bool modeloAtualizado = false;
+    private int etapaAtualIndex = 1; 
 
     protected override void OnInitialized() {
         base.OnInitialized();
-        Layout!.setPageName("Cake Designer");
-        return;
+        Layout!.setPageName("Cake designer");
+    }
+
+    private void Reset()
+    {
+        etapaAtualIndex = 1;
+        BoloService.AtualizarBolo(new Bolo());
+        modeloAtualizado = false;
+        ObterComponenteAtual();
+        StateHasChanged();
+    }
+
+    private Type ObterComponenteAtual()
+    {
+        return etapas!.Find(prop => prop.Id == etapaAtualIndex).ComponentType;
+    }
+
+    private void Return() {
+        if(etapaAtualIndex > 1)
+        {
+            modeloAtualizado = true;
+            etapaAtualIndex--;
+            ObterComponenteAtual();
+            StateHasChanged();
+        }
+    }
+
+    private void Next() {
+        if (etapaAtualIndex < etapas.Count) {
+            modeloAtualizado = false;
+            etapaAtualIndex++;
+            ObterComponenteAtual();
+            StateHasChanged();
+        }
+    }
+
+    public void AvisaModeloAtualizado()
+    {
+        modeloAtualizado = true;
+        StateHasChanged();
+    }
+
+    public async Task SalvarBolo()
+    {
+        BoloService.BoloAtual.imagemFinal = "";
+        BoloService.BoloAtual.criador = Layout.currentUser;
+        try
+        {
+            await BoloService.AdicionarBoloAoBanco();
+            Navigation.NavigateTo("/history"); // Ou para a página de conclusão
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Erro ao salvar o bolo no banco de dados.");
+            throw;
+        }
     }
 }
