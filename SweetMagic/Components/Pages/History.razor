@@ -1,0 +1,85 @@
+﻿@page "/history"
+@rendermode InteractiveServer
+@layout SweetMagic.Components.Layout.MainLayout
+@using SweetMagic.Helpers
+@using SweetMagic.Models
+@inject Services.UserService UserService
+@inject BoloService BoloService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Sweet Magic - Your cakes</PageTitle>
+<div class="background-box">
+    <div class="listaBolos">
+        @if (bolosUser == null) {
+            <p>Carregando seus bolos...</p>
+        }
+        else if (!bolosUser.Any()) {
+            <p>Você ainda não criou nenhum bolo.</p>
+        }
+        else {
+            @foreach (var bolo in bolosUser) {
+                <div class="boloCard">
+                    <div class="boloCardContent">
+                        <img src="@bolo.imagemFinal" alt="Imagem do bolo" class="boloImg" />
+                        <span class="boloTitulo">@bolo.titulo</span>
+                    </div>
+                    <button class="btnVer" @onclick="() => VisualizarBolo(bolo.Id)">
+                        <img src="/assets/images/lupa.png" class="lupaIcon" />
+                        <span class="visualizarTexto">Visualizar</span>
+                    </button>
+                </div>
+            }
+        }
+    </div>
+    <button class="actionBtn" @onclick="ConfirmDelete">Apagar meu cadastro</button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+
+    private List<Bolo>? bolosUser { get; set; }
+    private User? usuarioAtual => UserService.UsuarioAtual;
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        Layout!.setPageName("Your Cakes");
+    }
+
+    protected override async Task OnInitializedAsync() {
+        if (!UserService.Logado || usuarioAtual == null) {
+            Navigation.NavigateTo("/");
+            return;
+        }
+        bolosUser = await BoloService.ObterBolosUsuarioAsync(usuarioAtual);
+    }
+
+    private void VisualizarBolo(int boloId) {
+        Navigation.NavigateTo($"/bolo/{boloId}");
+    }
+
+    private async Task ConfirmDelete() {
+        bool confirm = await JS.InvokeAsync<bool>("confirm", "Tem certeza que quer deletar todos os seus dados? Não será possível recuperar.");
+        if (confirm) {
+            await DeleteUserData();
+        }
+    }
+
+    private async Task DeleteUserData() {
+
+        if (usuarioAtual?.Email != null) {
+            bool success = await UserService.DeleteUserDataAsync(usuarioAtual.Email);
+            if (success) {
+                UserService.LogoutUser();
+                Navigation.NavigateTo("/", forceLoad: true);
+            }
+            else {
+                // Lidar com erro
+            }
+        }
+        else {
+            Navigation.NavigateTo("/");
+        }
+    }
+}

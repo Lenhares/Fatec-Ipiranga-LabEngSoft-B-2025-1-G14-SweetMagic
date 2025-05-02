@@ -1,0 +1,137 @@
+﻿@inherits LayoutComponentBase
+@using SweetMagic.Models
+@using MudBlazor
+@using MudBlazor.Services
+@inject NavigationManager NavigationManager
+@inject SweetMagic.Services.UserService UserService
+@inject IJSRuntime JSRuntime
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<div class="page">
+    <main>
+        <div class="background-image"></div>
+        <div class="@navBarStatus">
+            <div class="mainLogo">
+                <img class="logo" width="100" height="60" src="assets/images/logo.png" alt="Sweet Magic Logo" />
+            </div>
+            <div class="navBtnDiv">
+                <nav class="navbar">
+                    <ul class="ulnavbar">
+                        <li>
+                            <button class="nav-btn" @onclick="openDesigner">Criar Bolo</button>
+                        </li>
+                        <li>
+                            <button class="nav-btn" @onclick="openHistory">Meus bolos</button>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+            <div class="mainHeaderDiv">
+                <h1 id="header">@_pageName</h1>
+            </div>
+            <div class="logoutDiv">
+                <ul class="ulLogout">
+                    <li>
+                        <button class="logout-btn" @onclick="loggedOut">Sair</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <article class="content">
+            <CascadingValue Value="this">
+                @Body
+            </CascadingValue>
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    private string navBarStatus => UserService.Logado ? "top-row-visible" : "top-row-disabled";
+    private string _pageName { get; set; } = "Sweet Magic";
+    private bool _isFirstRender = true;
+
+    protected override void OnInitialized() {
+
+        UserService.StatusUsuarioAtualizado += StateHasChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
+        StateHasChanged();
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e) {
+        if (!e.Location.Equals("/", StringComparison.OrdinalIgnoreCase)) {
+
+            JSRuntime.InvokeVoidAsync("localStorage.setItem", "previousUrl", e.Location);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+
+        if (firstRender) {
+
+            _isFirstRender = false;
+            var savedEmail = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "saved");
+            if (!string.IsNullOrEmpty(savedEmail) && !UserService.Logado) {
+
+                if (await UserService.RestoreSessionAsync(savedEmail)) {
+
+                    var previousUrl = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "previousUrl");
+                    if (!string.IsNullOrEmpty(previousUrl)) {
+
+                        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "previousUrl");
+                        NavigationManager.NavigateTo(previousUrl);
+                    }
+                    else {
+                        NavigationManager.NavigateTo("/history"); // Página padrão após relogar
+                    }
+                }
+                else {
+                    await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "saved");
+                    NavigationManager.NavigateTo("/"); // Redirecionar para login se a restauração falhar
+                }
+                StateHasChanged(); // Forçar re-renderização após a tentativa de restauração
+            }
+        }
+    }
+
+    public void loggedOut() {
+        UserService.LogoutUser();
+        JSRuntime.InvokeVoidAsync("localStorage.removeItem", "saved");
+        JSRuntime.InvokeVoidAsync("localStorage.removeItem", "previousUrl");
+        NavigationManager.NavigateTo("/");
+        return;
+    }
+
+    public string setPageName(string pageName) {
+        _pageName = pageName;
+        StateHasChanged();
+        return pageName;
+    }
+
+    public void openDesigner() {
+        if (UserService.Logado)
+        {
+            NavigationManager.NavigateTo("/designer");
+        }
+        return;
+    }
+
+    public void openHistory() {
+        if (UserService.Logado) {
+            NavigationManager.NavigateTo("/history");
+        }
+        return;
+    }
+
+    public void Dispose() {
+        UserService.StatusUsuarioAtualizado -= StateHasChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
