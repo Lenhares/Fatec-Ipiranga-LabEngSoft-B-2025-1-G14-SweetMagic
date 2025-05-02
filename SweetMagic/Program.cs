@@ -12,8 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddDbContext<AppDbContext>(options =>
    // options.UseSqlServer("Server=localhost;Database=SweetMagic;User Id=sweetMagicApp;Password=batataepao2409@;TrustServerCertificate=True;"));
 
-
-
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddRazorComponents()
