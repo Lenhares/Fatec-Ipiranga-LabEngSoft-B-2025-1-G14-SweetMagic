@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SweetMagic.Models;
 using SweetMagic.Data;
-using SweetMagic.Helpers;
 
 namespace SweetMagic.Helpers {
     public class BoloService {
@@ -38,6 +37,52 @@ namespace SweetMagic.Helpers {
                 // Registre o erro (opcional)
                 Console.WriteLine($"Erro ao salvar o bolo: {ex.Message}");
                 return false; // Indica que houve um erro
+            }
+        }
+
+        public async Task<bool> AtualizarBoloNoBanco() {
+            try {
+                var boloExistente = await _dbContext.Bolos.FindAsync(BoloAtual.Id);
+                if (boloExistente != null) {
+
+                    _dbContext.Entry(boloExistente).CurrentValues.SetValues(BoloAtual);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                return false; // Bolo não encontrado
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Erro ao atualizar o bolo com ID {BoloAtual.Id}: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<List<Bolo>> ObterBolosUsuarioAsync(User criador)
+        {
+            return await _dbContext.Bolos
+                .Where(b => b.criador.Id == criador.Id)
+                .ToListAsync();
+        }
+
+        public async Task<Bolo?> ObterBoloPorIdAsync(int id) {
+            return await _dbContext.Bolos
+                .Include(b => b.camadas) // Incluir as camadas relacionadas
+                .FirstOrDefaultAsync(b => b.Id == id);
+        }
+
+        public async Task<bool> ExcluirBoloAsync(int id) {
+            try {
+                var boloParaExcluir = await _dbContext.Bolos.FindAsync(id);
+                if (boloParaExcluir != null) {
+                    _dbContext.Bolos.Remove(boloParaExcluir);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                return false; // Bolo não encontrado
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Erro ao excluir o bolo com ID {id}: {ex.Message}");
+                return false;
             }
         }
     }

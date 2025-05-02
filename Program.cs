@@ -13,9 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //builder.Services.AddDbContext<AppDbContext>(options =>
    // options.UseSqlServer("Server=localhost;Database=SweetMagic;User Id=sweetMagicApp;Password=batataepao2409@;TrustServerCertificate=True;"));
-
-builder.Services.AddScoped<UserService>();
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -33,6 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .EnableSensitiveDataLogging()
     .LogTo(Console.WriteLine, LogLevel.Information));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<BoloService>();
 builder.Services.AddMudServices();
 

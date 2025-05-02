@@ -1,10 +1,11 @@
-﻿ @page "/"
+﻿@page "/"
 @rendermode InteractiveServer
 @layout SweetMagic.Components.Layout.MainLayout
 @using SweetMagic.Models;
 @using SweetMagic.Services;
 @using Microsoft.JSInterop;
 @using Microsoft.AspNetCore.Components.Forms;
+@inject NavigationManager NavigationManager
 
 <PageTitle>Sweet Magic - Login</PageTitle>
 <div class="login-page">
@@ -27,10 +28,10 @@
                 <InputText class="form-control" id="password" @bind-Value="loginModel.Password" type="password"  @oninput="clearError"/>
             </div>
 
-            @*<div class="form-group">
-                <InputCheckbox @bind-Value="loginModel.RememberMe" />
-                <label class="form-label">Salvar login</label>
-            </div>*@
+            <div class="form-group rememberMe">
+                <InputCheckbox id="rememberMe" @bind-Value="loginModel.RememberMe" class="form-checkbox" />
+                <label class="form-label rememberMeLabel" for="rememberMe">Lembrar de mim</label>
+            </div>
 
             <button class="loginBtn" type="submit">Login</button>
         </EditForm>
@@ -44,9 +45,10 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
-
+    [Inject]
+    public UserService? UserService { get; set; }
+    [Inject]
+    private IJSRuntime? JS { get; set; }
     private LoginModel loginModel = new LoginModel();
     private EditContext? editContext;
     private CancellationTokenSource? debounceCts;
@@ -56,7 +58,6 @@
 
         debounceCts?.Cancel();
         debounceCts = new CancellationTokenSource();
-
         try {
             await Task.Delay(500, debounceCts.Token);
             errorMessage = null;
@@ -72,11 +73,6 @@
         editContext = new(loginModel);
         editContext.OnValidationRequested += HandleValidationRequested;
     }
-
-    [Inject]
-    public UserService? UserService { get; set; }  // Nullable UserService
-    [Inject]
-    private IJSRuntime? JS { get; set; } // Nullable IJS Runtime
 
     private void HandleValidationRequested(object? sender,
         ValidationRequestedEventArgs args) {
@@ -110,17 +106,12 @@
 
         if (isAuthenticated)
         {
-            User user = await UserService.GetUserByEmailAsync(loginModel.Email!);
-            if (user != null) {
-                Layout!.currentUser = user;
-            };
-            Layout!.loggedIn();
-
             if (loginModel.RememberMe)
             {
                 await SetRememberUserCookie(loginModel.Email!);
             }
             errorMessage = null; // Clear error message on successful login
+            NavigationManager.NavigateTo("/history");
         }
         else
         {
@@ -132,12 +123,5 @@
     private async Task SetRememberUserCookie(string email) {
         await JS!.InvokeVoidAsync("localStorage.setItem", "saved", email);
     }
-
-    @*private async Task LoadSavedEmail() {
-        var savedEmail = await JS!.InvokeAsync<string>("localStorage.getItem", "savedEmail");
-        if (!string.IsNullOrEmpty(savedEmail)) {
-            loginModel.Email = savedEmail;
-            loginModel.RememberMe = true;
-        }*@
     }
 }

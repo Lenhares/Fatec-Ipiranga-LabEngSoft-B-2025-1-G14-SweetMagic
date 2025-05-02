@@ -1,4 +1,9 @@
-﻿.background-box {
+﻿@font-face {
+    font-family: "Dreaming";
+    src: url('../fonts/DreamingOutloud.ttf');
+}
+
+.background-box {
     background-color: white;
     padding: 2rem 1.5rem;
     border-radius: 10px;
@@ -6,6 +11,13 @@
     margin: auto;
     width: 40%;
     height: 100%;
+}
+
+.listaBolos {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os cards */
+    gap: 1rem;
 }
 
 .actionBtn {
@@ -17,4 +29,66 @@
     cursor: pointer;
     font-size: 1rem; /* Responsive font size */
     transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+}
+
+.boloCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffc7d4;
+    border-radius: 12px;
+    border: 1px solid black;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+.boloCardContent {
+    display: flex;
+    align-items: center; /* Alinhar verticalmente a imagem e o título */
+    gap: 12px; /* Espaço entre a imagem e o título */
+    flex-grow: 1; /* Ocupar o espaço restante */
+}
+
+.boloImg {
+    height: 90px;
+    width: auto;
+}
+
+.boloTitulo {
+    font-weight: 350;
+    font-family: 'Segoe UI';
+    font-size: 1.5rem;
+    color: #000;
+    text-align: left;
+    flex-grow: 1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.btnVer {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    padding: 0;
+}
+
+.lupaIcon {
+    height: 61px;
+    width: 61px;
+}
+
+.visualizarTexto {
+    font-size: 20px;
+    font-weight: 350;
+    font-family: 'Segoe UI';
 }

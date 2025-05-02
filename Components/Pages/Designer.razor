@@ -1,10 +1,12 @@
 ﻿@page "/designer"
+@page "/designer/{Id:int}"
 @rendermode InteractiveServer
 @layout SweetMagic.Components.Layout.MainLayout
 @using SweetMagic.Helpers
 @using SweetMagic.Models
 @inject NavigationManager Navigation
 @inject BoloService BoloService
+@inject Services.UserService UserService
 
 <PageTitle>Sweet Magic - Designer</PageTitle>
 <CascadingValue Value="this">
@@ -21,13 +23,50 @@
 @code {
     [CascadingParameter]
     public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+    [Parameter]
+    public int? Id { get; set; }
+
     private List<EtapaDesigner> etapas = EtapaDesigner.GetEtapas();
     private bool modeloAtualizado = false;
     private int etapaAtualIndex = 1; 
+    private bool carregandoBolo = false; // Flag para controlar a carga do bolo
 
     protected override void OnInitialized() {
         base.OnInitialized();
         Layout!.setPageName("Cake designer");
+    }
+
+    protected override async Task OnParametersSetAsync() {
+        
+        //Valor de ID definido através da URI
+        if (Id.HasValue && !carregandoBolo && BoloService.BoloAtual.Id != Id.Value) {
+
+            carregandoBolo = true;
+            // Carregar o bolo para edição
+            var boloParaEditar = await BoloService.ObterBoloPorIdAsync(Id.Value);
+            carregandoBolo = false; // Resetar a flag após a conclusão (ou falha)
+
+            if (boloParaEditar != null) {
+                BoloService.AtualizarBolo(boloParaEditar);
+                modeloAtualizado = true;
+                etapaAtualIndex = etapas.Count;
+            }
+            else {
+                // Lidar com o caso em que o bolo não é encontrado
+                Console.WriteLine($"Bolo com ID {Id.Value} não encontrado para edição.");
+                Navigation.NavigateTo("/history"); // Voltar para a lista
+            }
+        }
+        else if (!Id.HasValue && BoloService.BoloAtual.Id != 0) {
+            // Se não há ID e já temos um bolo carregado (edição cancelada?), resetar
+            Reset();
+        }
+        else if (!Id.HasValue && BoloService.BoloAtual.Id == 0) {
+            // Se não há ID e não temos bolo, iniciar novo
+            BoloService.AtualizarBolo(new Bolo());
+            etapaAtualIndex = 1;
+            modeloAtualizado = false;
+        }
     }
 
     private void Reset()
@@ -71,14 +110,33 @@
 
     public async Task SalvarBolo()
     {
-        BoloService.BoloAtual.imagemFinal = "";
-        BoloService.BoloAtual.criador = Layout.currentUser;
+        BoloService.BoloAtual.imagemFinal = "assets/images/designer/finishedCake.png";
+        if(UserService.UsuarioAtual != null)
+        {
+            BoloService.BoloAtual.criador = UserService.UsuarioAtual;
+        }
         try
         {
-            await BoloService.AdicionarBoloAoBanco();
-            Navigation.NavigateTo("/history"); // Ou para a página de conclusão
+
+            if (Id.HasValue) {
+                // Atualizar um bolo existente
+                BoloService.BoloAtual.Id = Id.Value; // Garantir que o ID esteja correto
+                bool sucesso = await BoloService.AtualizarBoloNoBanco();
+                if (sucesso) {
+                    Navigation.NavigateTo("/history");
+                }
+                else {
+                    Console.WriteLine($"Erro ao atualizar o bolo com ID {Id.Value}.");
+                    // Lógica para lidar com falha na atualização
+                }
+            }
+            else {
+                // Adicionar um novo bolo
+                await BoloService.AdicionarBoloAoBanco();
+                Navigation.NavigateTo("/history"); // Ou para a página de conclusão
+            }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             Console.WriteLine("Erro ao salvar o bolo no banco de dados.");
             throw;

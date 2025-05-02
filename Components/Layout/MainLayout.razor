@@ -3,6 +3,8 @@
 @using MudBlazor
 @using MudBlazor.Services
 @inject NavigationManager NavigationManager
+@inject SweetMagic.Services.UserService UserService
+@inject IJSRuntime JSRuntime
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -52,22 +54,58 @@
 </div>
 
 @code {
-    private string navBarStatus { get; set; } = "top-row-disabled";
+    private string navBarStatus => UserService.Logado ? "top-row-visible" : "top-row-disabled";
     private string _pageName { get; set; } = "Sweet Magic";
-    public User currentUser;
+    private bool _isFirstRender = true;
 
-    public void loggedIn() {
-        navBarStatus = "top-row-visible";
-        NavigationManager.NavigateTo("/history");
+    protected override void OnInitialized() {
+
+        UserService.StatusUsuarioAtualizado += StateHasChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
         StateHasChanged();
-        return;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e) {
+        if (!e.Location.Equals("/", StringComparison.OrdinalIgnoreCase)) {
+
+            JSRuntime.InvokeVoidAsync("localStorage.setItem", "previousUrl", e.Location);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+
+        if (firstRender) {
+
+            _isFirstRender = false;
+            var savedEmail = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "saved");
+            if (!string.IsNullOrEmpty(savedEmail) && !UserService.Logado) {
+
+                if (await UserService.RestoreSessionAsync(savedEmail)) {
+
+                    var previousUrl = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "previousUrl");
+                    if (!string.IsNullOrEmpty(previousUrl)) {
+
+                        await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "previousUrl");
+                        NavigationManager.NavigateTo(previousUrl);
+                    }
+                    else {
+                        NavigationManager.NavigateTo("/history"); // Página padrão após relogar
+                    }
+                }
+                else {
+                    await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "saved");
+                    NavigationManager.NavigateTo("/"); // Redirecionar para login se a restauração falhar
+                }
+                StateHasChanged(); // Forçar re-renderização após a tentativa de restauração
+            }
+        }
     }
 
     public void loggedOut() {
-        currentUser = null;
-        navBarStatus = "top-row-disabled";
+        UserService.LogoutUser();
+        JSRuntime.InvokeVoidAsync("localStorage.removeItem", "saved");
+        JSRuntime.InvokeVoidAsync("localStorage.removeItem", "previousUrl");
         NavigationManager.NavigateTo("/");
-        StateHasChanged();
         return;
     }
 
@@ -78,16 +116,22 @@
     }
 
     public void openDesigner() {
-        navBarStatus = "top-row-visible";
-        NavigationManager.NavigateTo("/designer");
-        StateHasChanged();
+        if (UserService.Logado)
+        {
+            NavigationManager.NavigateTo("/designer");
+        }
         return;
     }
 
     public void openHistory() {
-        navBarStatus = "top-row-visible";
-        NavigationManager.NavigateTo("/history");
-        StateHasChanged();
+        if (UserService.Logado) {
+            NavigationManager.NavigateTo("/history");
+        }
         return;
+    }
+
+    public void Dispose() {
+        UserService.StatusUsuarioAtualizado -= StateHasChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }
