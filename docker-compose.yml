@@ -1,0 +1,23 @@
+networks:
+    minhaAppNetwork:
+
+services:
+    SqlServerDb:
+        container_name: SqlServerContainer
+        image: mcr.microsoft.com/mssql/server
+        ports:
+            - 8002:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=batataepao2409@ 
+
+    sweetmagic:
+         container_name: SweetMagicContainer
+         image: ${DOCKER_REGISTRY-}sweetmagic
+         ports:
+            - 8001:8080
+         build:
+            context: SweetMagic
+            dockerfile: Dockerfile
+         depends_on:
+            - SqlServerDb
