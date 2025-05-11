@@ -1,9 +1,11 @@
-﻿@page "/bolo/{id:int}"
+@page "/bolo/{id:int}"
 @rendermode InteractiveServer
 @layout SweetMagic.Components.Layout.MainLayout
 @using SweetMagic.Models
+@using SweetMagic.Services
 @using SweetMagic.Helpers
 @inject BoloService BoloService
+@inject UserService UserService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -64,6 +66,10 @@
     private Bolo? bolo { get; set; }
 
     protected override async Task OnInitializedAsync() {
+
+        if (!UserService.Logado) {
+            Navigation.NavigateTo("/");
+        }
         Layout!.setPageName("Cake Details");
         bolo = await BoloService.ObterBoloPorIdAsync(Id);
     }
