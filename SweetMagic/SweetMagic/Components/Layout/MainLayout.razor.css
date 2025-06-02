@@ -1,0 +1,229 @@
+@font-face {
+    font-family: "Dreaming";
+    src: url('../fonts/DreamingOutloud.ttf');
+}
+
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+main {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.background-image {
+    position: absolute; /* Position it absolutely */
+    top: 0; /* Align it to the top */
+    left: 0; /* Align it to the left */
+    right: 0; /* Stretch it to the right */
+    bottom: 0; /* Stretch it to the bottom */
+    background-image: url('assets/images/background.jpg'); /* Set the background image */
+    background-size: cover; /* Cover the entire area */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repeating the image */
+    z-index: -1; /* Send it to the back */
+}
+
+.content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.navbar {
+    margin-right: auto;
+    padding: 10px 0px 0px 0px;
+}
+
+.ulnavbar, .ulLogout {
+    list-style-type: none;
+    display: flex;
+    gap: 10px;
+    padding: 0;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+}
+
+.logo {
+    text-align: left;
+    margin-right: 50px;
+}
+
+.nav-btn, .logout-btn {
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    padding: 0.6rem 1rem; /* Use responsive padding */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem; /* Responsive font size */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+}
+
+.nav-btn:hover, .logout-btn:hover {
+    background-color: #ff9cbb; /* New background color on hover */
+    transform: scale(1.05); /* Scale up the button slightly */
+}
+
+.logout-btn {
+    padding: 0.6rem 1.5rem; /* Adjusted for responsiveness */
+}
+
+.top-row-disabled{
+    display: none;
+}
+.top-row-visible {
+    background-color: #fe6694;
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    height: auto; /* Auto height to adapt on smaller screens */
+    align-items: center;
+    text-decoration: none;
+    flex-wrap: wrap; /* Allows elements to wrap on smaller screens */
+}
+
+    .top-row-visible ::deep a, .top-row ::deep .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+    }
+
+        .top-row-visible ::deep a:hover, .top-row ::deep .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        .top-row-visible ::deep a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+@media (max-width: 640.98px) {
+    body {
+        overflow: hidden;
+    }
+
+    /* Container principal - agora em 2 linhas distintas */
+    .top-row-visible {
+        display: flex;
+        flex-direction: column;
+        max-height: none; /* Remove a limitação de altura */
+        align-items: center;
+        padding: 5px 0;
+    }
+
+    .navBtnDiv {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .logoutDiv {
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        width:100%;
+    }
+
+    /* Linha 1 - Logo (mantendo seu tamanho atual) */
+    .mainLogo {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .logo {
+        width: 75px;
+        height: 55px;
+        margin: 0 auto;
+    }
+
+    .navbar{
+        width: 100%;
+        justify-content: center;
+    }
+
+    .ulnavbar, .ulLogout {
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .nav-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        margin: 0 !important; /* Remove margens verticais */
+        white-space: nowrap; /* Evita quebra de texto */
+    }
+
+    .logout-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 1rem;
+        margin-top: 0.2rem;
+    }
+
+    /* Esconde elementos não necessários */
+    #header, .mainHeaderDiv {
+        display: none !important;
+    }
+
+    .navbar, .logoutDiv {
+        margin: 0;
+        padding: 0;
+    }
+
+    .content {
+        max-height: calc(85vh - 10px);
+        overflow-y: auto;
+    }
+}
+
+/* Error UI */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+#header {
+    font-size: 3rem;
+    font-family: 'Dreaming';
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navBtnDiv {
+    flex-grow: 1;
+    justify-content: flex-start;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.mainHeaderDiv {
+    position:absolute;
+    justify-content: center;
+    text-align: center;
+}
+
+.logoutDiv {
+    margin-left: auto;
+}

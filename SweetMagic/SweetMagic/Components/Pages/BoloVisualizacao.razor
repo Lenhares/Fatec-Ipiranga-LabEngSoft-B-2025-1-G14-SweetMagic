@@ -1,0 +1,142 @@
+﻿@page "/bolo/{id:int}"
+@rendermode InteractiveServer
+@layout SweetMagic.Components.Layout.MainLayout
+@using SweetMagic.Models
+@using SweetMagic.Services
+@using SweetMagic.Helpers
+@inject BoloService BoloService
+@inject UserService UserService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Sweet Magic - Cake details</PageTitle>
+
+<div class="cakeDetailsPage">
+
+    @if (bolo == null) {
+        <p>Carregando detalhes do bolo...</p>
+    }
+    else {
+        <h2>@bolo.titulo</h2>
+        <img src=@bolo.imagemFinal alt="@bolo.titulo" class="boloImage" />
+
+        <div class="detailsContainer">
+            <div class="infoColumn">
+                <p><strong>Peso:</strong> @bolo.peso kg</p>
+                <p><strong>Tipo:</strong> @bolo.tipo</p>
+                <p><strong>Camadas:</strong> @bolo.camadas.Count</p>
+                <p><strong>Data entrega:</strong> @bolo.dataEntrega.ToString("dd/MM/yyyy")</p>
+                @if (bolo.cobertura != null) {
+                    <p><strong>Cobertura:</strong> @bolo.cobertura.tipo</p>
+                    @if (!string.IsNullOrEmpty(bolo.cobertura.tema)) {
+                        <p><strong>Tema da Cobertura:</strong> @bolo.cobertura.tema</p>
+                    }
+                    <p><strong>Papel Arroz:</strong> @(bolo.cobertura.papelArroz ? "Sim" : "Não")</p>
+                }
+            </div>
+
+            <div class="layersSummary">
+                <h3>Resumo das camadas:</h3>
+                @if (bolo.camadas != null && bolo.camadas.Any()) {
+                    <ul>
+                        @foreach (var camada in bolo.camadas.OrderBy(c => c.ordem)) {
+                            <li>Camada @camada.ordem: Massa - @camada.saborMassa, Recheio - @camada.saborRecheio</li>
+                        }
+                    </ul>
+                }
+                else {
+                    <p>Nenhuma camada adicionada.</p>
+                }
+            </div>
+        </div>
+
+        <div class="actionsContainer">
+            <button class="editButton" @onclick="EditarBolo">Editar bolo</button>
+            <button class="deleteButton" @onclick="ExcluirBolo">Excluir bolo</button>
+        </div>
+    }
+
+    @if (bolo != null) {
+        <div class="whatsappExport">
+            <button class="whatsappButton" @onclick="ExportarParaWhatsApp">
+                Exportar para WhatsApp
+                <img src="/assets/images/whatsapp.png" alt="WhatsApp" class="whatsappIcon" />
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    [CascadingParameter]
+    public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+
+    private Bolo? bolo { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+
+        if (!UserService.Logado) {
+            Navigation.NavigateTo("/");
+        }
+        Layout!.setPageName("Cake Details");
+        bolo = await BoloService.ObterBoloPorIdAsync(Id);
+    }
+
+    private void EditarBolo() {
+        Navigation.NavigateTo($"/designer/{Id}");
+    }
+
+    private async Task ExcluirBolo() {
+        bool confirm = await JS.InvokeAsync<bool>("confirm", $"Tem certeza que deseja excluir o bolo \"{bolo?.titulo}\"?");
+        if (confirm && bolo != null) {
+            bool sucesso = await BoloService.ExcluirBoloAsync(bolo.Id);
+            if (sucesso) {
+                Navigation.NavigateTo("/history");
+            }
+            else {
+                Console.WriteLine($"Erro ao excluir o bolo com ID: {bolo.Id}");
+            }
+        }
+    }
+
+    private async Task ExportarParaWhatsApp() {
+        if (bolo == null) return;
+
+        var mensagem = $"*Detalhes do Bolo* \n";
+        mensagem += $"Título: {bolo.titulo}\n";
+        mensagem += $"Peso: {bolo.peso} kg\n";
+        mensagem += $"Tipo: {bolo.tipo}\n";
+        mensagem += $"Data de Entrega: {bolo.dataEntrega:dd/MM/yyyy}\n";
+
+        if (bolo.cobertura != null) {
+            mensagem += $"Cobertura: {bolo.cobertura.tipo}\n";
+            if (!string.IsNullOrEmpty(bolo.cobertura.tema)) {
+                mensagem += $"Tema da Cobertura: {bolo.cobertura.tema}\n";
+            }
+            mensagem += $"Papel Arroz: {(bolo.cobertura.papelArroz ? "Sim" : "Não")}\n";
+        }
+
+        if (bolo.camadas != null && bolo.camadas.Any()) {
+            mensagem += "Camadas:\n";
+            foreach (var camada in bolo.camadas.OrderBy(c => c.ordem)) {
+                mensagem += $"- Camada {camada.ordem}: Massa - {camada.saborMassa}, Recheio - {camada.saborRecheio}\n";
+            }
+        }
+
+        // // Inclui o link da imagem, se existir
+        // if (!string.IsNullOrEmpty(bolo.imagemFinal)) {
+        //     mensagem += $"\nImagem: {bolo.imagemFinal}\n";
+        // }
+
+        // Codificar a mensagem para URL (evitar erros com caracteres especiais)
+        var mensagemCodificada = Uri.EscapeDataString(mensagem);
+
+        // Montar o link para WhatsApp sem contato específico
+        var url = $"https://wa.me/?text={mensagemCodificada}";
+
+        // Abrir no navegador (ou na aba atual)
+        await JS.InvokeVoidAsync("open", url, "_blank");
+    }
+
+}

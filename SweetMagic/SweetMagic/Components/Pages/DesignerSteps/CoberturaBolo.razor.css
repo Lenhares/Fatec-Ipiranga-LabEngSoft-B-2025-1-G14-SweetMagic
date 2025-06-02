@@ -1,0 +1,102 @@
+﻿.btnContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.btnGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 3rem;
+    margin-right: 3rem;
+}
+
+.btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem; /* Responsive font size */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+    width: 10rem;
+    height: 10rem;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    text-align: center;
+}
+
+    .btn.selecionado {
+        border: 3px solid #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .btn:hover {
+        transform: scale(1.05); /* Efeito de zoom no hover */
+    }
+
+.btnImg {
+    height: 6rem;
+    width: 6rem;
+    margin: 0px;
+    object-fit: contain;
+}
+
+.btnTitulo {
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-family: 'Segoe UI';
+    margin-top: 0.5rem;
+    text-align: center;
+    word-break: break-word;
+
+}
+
+.inputCampo {
+    width: 20rem;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+    .inputCampo:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .inputCampo.erro {
+        border: 2px solid red;
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+
+.erroMensagem {
+    color: red;
+    font-size: 1rem;
+    margin-top: 0.3rem;
+    text-align: center;
+}
+
+.campoExtra {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+    .campoExtra label {
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }

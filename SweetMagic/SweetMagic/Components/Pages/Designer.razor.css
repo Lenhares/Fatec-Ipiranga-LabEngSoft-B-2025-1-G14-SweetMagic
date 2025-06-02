@@ -1,0 +1,139 @@
+﻿.background-box {
+    background-color: white;
+    padding: 2rem 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    margin: auto;
+    width: 40%;
+    min-height: 85vh;
+    position: relative;
+    overflow-y: auto;
+}
+
+.restartBtn {
+    margin-bottom: 2rem;
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    padding: 0.5rem 2rem; /* Use responsive padding */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem; /* Responsive font size */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Add transition */
+    display: block;
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.returnBtn,
+.nextBtn {
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    padding: 0.7rem 2rem; /* Ajuste o padding para melhor responsividade */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    /* Remova as margens que estavam posicionando os botões */
+    margin: 0 1rem 0 1rem;
+}
+
+.returnBtn:hover,
+.nextBtn:hover {
+    transform: scale(1.05);
+}
+
+.navegacaoDesigner {
+    position: absolute;
+    bottom: 0; /* Alinha a parte inferior do elemento com a parte inferior da viewport */
+    left: 0;
+    margin-top: 5rem;
+    width: 100%; /* Garante que o container ocupe toda a largura */
+    padding: 1rem; /* Adiciona um pouco de espaço interno ao redor dos botões */
+    display: flex; /* Permite alinhar os botões horizontalmente */
+    justify-content: space-between; /* Coloca espaço entre os botões */
+    align-items: center; /* Alinha os botões verticalmente ao centro (se necessário) */
+    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+    z-index: 1000; /* Garante que os botões fiquem acima de outros conteúdos */
+}
+
+.restartBtn:active,
+.returnBtn:active,
+.nextBtn:active{
+    background-color: #e0a7b8; /* Um tom ligeiramente mais escuro ou diferente */
+    transform: scale(0.95); /* Opcional: um pequeno "encolhimento" ao clicar */
+    transition: background-color 0.1s ease, transform 0.1s ease; /* Reduz a duração da transição para o feedback ser rápido */
+}
+
+.nextBtn:disabled,
+.returnBtn:disabled,
+.restartBtn:disabled {
+    background-color: #d3d3d3; /* Cor neutra para indicar desativado */
+    cursor: not-allowed;
+    transform: none; /* Sem animação */
+    transition: none; /* Sem transição */
+}
+
+@media (max-width: 768px) {
+    /* Container principal com margens sutis */
+    .background-box {
+        width: calc(90vw - 20px); /* 10px de margem em cada lado */
+        max-height: calc(90vh - 20px); /* Altura máxima com espaço acima/abaixo */
+        min-height: 70vh;
+        padding: 1rem;
+        margin: 10px auto; /* Margem externa sutil */
+        position: relative;
+        overflow-y: auto; /* Permitir scroll vertical no container principal */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        border-radius: 12px; /* Suaviza as bordas */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Destaque visual */
+        background-color: white;
+    }
+
+    .restartBtn {
+        display: block; /* Transforma em bloco para centralização */
+        margin: 0 auto 1rem auto !important; /* Centraliza horizontalmente */
+        width: 90%; /* Largura generosa */
+        max-width: 250px; /* Largura máxima */
+    }
+
+    /* Container de conteúdo rolável */
+    .scrollable-content {
+        flex: 1;
+        width: 100%;
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: visible; /* Permitir scroll horizontal aqui também, para garantir */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Container dos componentes com scroll horizontal */
+    .component-container {
+        width: fit-content; /* Ajusta a largura ao conteúdo interno */
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 0 0.5rem; /* Padding lateral reduzido */
+        display: flex; /* Para que os itens internos fiquem lado a lado */
+        flex-direction: column; /* Adicionado: Organiza os itens verticalmente */
+        align-items: center; /* Adicionado: Centraliza os itens horizontalmente (opcional) */
+    }
+
+    /* Ajuste fino para os botões */
+    .navegacaoDesigner {
+        position: sticky; /* Manter sticky */
+        bottom: 0;
+        margin-top: 1rem; /* Empurra para o final dentro do flex container */
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        z-index: 1000;
+        background-color: white; /* Garante que o fundo seja branco */
+        border-top: 1px solid #f0f0f0;
+    }
+}

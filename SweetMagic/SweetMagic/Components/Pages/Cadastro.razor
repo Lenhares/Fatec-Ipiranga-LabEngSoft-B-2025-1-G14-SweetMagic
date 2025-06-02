@@ -1,0 +1,128 @@
+﻿@page "/cadastro"
+@rendermode InteractiveServer
+@layout SweetMagic.Components.Layout.MainLayout
+@using SweetMagic.Models
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations;
+@inject Services.UserService UserService
+@inject NavigationManager Navigation
+
+<PageTitle>Sweet Magic - Cadastro</PageTitle>
+<div class="register-page">
+    <div class="register-box">
+    <a href="/">
+        <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </a>
+    <h2>Cadastre-se</h2>
+    <EditForm EditContext="editContext" class="editFormClass"  OnValidSubmit="Register">
+        <DataAnnotationsValidator />
+        <!-- E-mail Field -->
+        <div class="form-group">
+            <label for="email" class="form-label">E-mail</label>
+                <InputText id="email" class="form-control" @bind-Value="user!.Email" type="text" @oninput="clearError" />
+            <ValidationMessage For="@(() => user!.Email)" />
+        </div>
+
+        <!-- Name Field -->
+        <div class="form-group">
+            <label for="nome" class="form-label">Seu nome</label>
+                <InputText id="nome" class="form-control" @bind-Value="user!.Nome" @oninput="clearError" />
+            <ValidationMessage For="@(() => user!.Nome)" />
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+            <label for="pwd" class="form-label">Senha</label>
+                <InputText id="pwd" class="form-control" @bind-Value="user!.PasswordHash" type="password" @oninput="clearError" />
+            <ValidationMessage For="@(() => user!.PasswordHash)" />
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-group">
+            <label for="pwd2" class="form-label">Repetir senha</label>
+                <InputText id="pwd2" class="form-control" @bind-Value="confirmPassword" type="password" @oninput="clearError" />
+            <ValidationMessage For="@(() => confirmPassword)" />
+        </div>
+
+        <!-- Security question Field -->
+        <div class="form-group">
+            <label for="nome" class="form-label">Pergunta de segurança</label>
+            <InputText id="nome" class="form-control" @bind-Value="user!.PerguntaSeguranca" @oninput="clearError" />
+            <ValidationMessage For="@(() => user!.PerguntaSeguranca)" />
+        </div>
+
+        <!-- Security answer Field -->
+        <div class="form-group">
+            <label for="nome" class="form-label">Resposta de segurança</label>
+            <InputText id="nome" class="form-control" @bind-Value="user!.RespostaSeguranca" @oninput="clearError" />
+            <ValidationMessage For="@(() => user!.RespostaSeguranca)" />
+        </div>
+
+        <button type="submit" class="cadastrarBtn-class btn btn-primary" id="cadastrarBtn">Cadastrar</button>
+    </EditForm>
+    </div>
+</div>
+
+
+@code {
+
+    [CascadingParameter]
+    public SweetMagic.Components.Layout.MainLayout? Layout { get; set; }
+
+    private EditContext? editContext;
+    private ValidationMessageStore? messageStore;
+    private User? user;
+
+    private string confirmPassword="";
+
+    public void clearError() {
+        messageStore!.Clear();
+        editContext!.NotifyValidationStateChanged();
+    }
+
+    protected override void OnInitialized() {
+        user ??= new();
+        editContext = new(user);
+        editContext.OnValidationRequested += HandleValidationRequested;
+        messageStore = new(editContext);
+    }
+
+    private void HandleValidationRequested(object? sender,
+        ValidationRequestedEventArgs args) {
+        messageStore?.Clear();
+
+        // Custom validation logic
+        //Validates if all fields filled
+        foreach(var property in user!.GetType().GetProperties()) {
+            var value = property.GetValue(user!);
+            if (value == null || (value is string str && string.IsNullOrWhiteSpace(str))){
+                return;
+            }
+        }
+        //Validates if passwords coincide
+        if (user!.PasswordHash != confirmPassword) {
+            messageStore?.Add(() => user!.PasswordHash!, "As senhas não coincidem.");
+            messageStore?.Add(() => confirmPassword, "As senhas não coincidem.");
+
+            return;
+        }
+    }
+
+    private async Task Register() {
+
+        // Attempt to register the user
+        bool success = await UserService.RegisterUserAsync(user!.Email!, user.Nome!, user!.PasswordHash!, user!.PerguntaSeguranca!, user!.RespostaSeguranca!);
+        if (success) {
+            Navigation.NavigateTo("/"); // Redirect to login page
+        }
+        else {
+            messageStore?.Add(() => user!.Email!, "E-mail já cadastrado.");
+        }
+    }
+
+    public void Dispose() {
+        if (editContext is not null) {
+            editContext.OnValidationRequested -= HandleValidationRequested;
+        }
+    }
+}

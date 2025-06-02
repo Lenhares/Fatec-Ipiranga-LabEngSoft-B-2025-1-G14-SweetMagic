@@ -1,0 +1,72 @@
+﻿@using SweetMagic.Helpers
+@using SweetMagic.Models
+@inject BoloService BoloService
+
+<h3>Qual será o sabor da massa da camada @numCamadaAtual ?</h3>
+<div class="btnContainer">
+    <div class="btnGroup">
+        <button class="btn @(saborEscolhido.Equals("Red Velvet") ? " selecionado" : "" )"
+        @onclick="@(() => SelecionarMassa(numCamadaAtual, "Red Velvet"))">
+            <img src="assets/images/designer/smallCake.png" class="btnImg" />
+            <span class="btnTitulo">Red Velvet</span>
+        </button>
+    </div>
+    <div class="btnGroup">
+        <button class="btn @(saborEscolhido.Equals("Chocolate") ? " selecionado" : "" )"
+        @onclick="@(() => SelecionarMassa(numCamadaAtual, "Chocolate"))">
+            <img src="assets/images/designer/chocolateCake.png" class="btnImg" />
+            <span class="btnTitulo">Chocolate</span>
+        </button>
+    </div>
+    <div class="btnGroup">
+        <button class="btn @(saborEscolhido.Equals("Baunilha") ? " selecionado" : "" )"
+        @onclick="@(() => SelecionarMassa(numCamadaAtual, "Baunilha"))">
+            <img src="assets/images/designer/vanillaCake.png" class="btnImg" />
+            <span class="btnTitulo">Baunilha</span>
+        </button>
+    </div>
+</div>
+<button class="btn seletorCamada"
+@onclick="ProximaCamada"
+disabled="@camadaMaxima">
+    <span class="btnTitulo">Próxima camada</span>
+</button>
+@code {
+    [CascadingParameter]
+    public Designer? designer { get; set; }
+
+    private List<Camada>? camadasBolo = new List<Camada>();
+    private int numCamadaAtual = 1;
+    private string saborEscolhido = "";
+    private bool camadaMaxima = true;
+
+    private void SelecionarMassa(int ordemCamada, string saborMassa) {
+        if (saborEscolhido != saborMassa) // Desmarca se já estiver selecionado
+        {
+            saborEscolhido = saborMassa;
+            camadasBolo = BoloService.BoloAtual.camadas;
+            Camada camadaAtual = camadasBolo.Find(c => c.ordem == ordemCamada)!;
+            camadaAtual.saborMassa = saborMassa;
+            if (camadasBolo.Count == numCamadaAtual) {
+                designer!.AvisaModeloAtualizado();
+            }
+            else
+            {
+                camadaMaxima = false;   
+            }
+        }
+        else {
+            saborEscolhido = ""; // Desseleciona se o mesmo botão for clicado novamente
+            BoloService.AtualizarPropriedadeBolo(nameof(Bolo.camadas), new List<Camada>()); // Limpa o peso no modelo
+        }
+        StateHasChanged();
+    }
+
+    private void ProximaCamada()
+    {
+        camadaMaxima = true;
+        numCamadaAtual++;
+        saborEscolhido = "";
+        StateHasChanged();
+    }
+}

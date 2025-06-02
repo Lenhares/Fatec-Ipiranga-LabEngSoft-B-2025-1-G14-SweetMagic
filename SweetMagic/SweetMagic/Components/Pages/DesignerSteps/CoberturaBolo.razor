@@ -1,0 +1,107 @@
+﻿@using SweetMagic.Helpers
+@using SweetMagic.Models
+@inject BoloService BoloService
+
+<h3>Como será o topo do bolo?</h3>
+<div class="btnContainer">
+    <div class="btnGroup">
+        <button class="btn @(tipoSelecionado.Equals("Chantilly") ? " selecionado" : "" )"
+        @onclick="@(() => SelecionarTipo("Chantilly"))">
+            <img src="assets/images/designer/chantilly.png" class="btnImg" />
+            <span class="btnTitulo">Chantilly</span>
+        </button>
+    </div>
+    <div class="btnGroup">
+        <button class="btn@(tipoSelecionado.Equals("Pasta Americana") ? " selecionado" : "" )"
+        @onclick="@(() => SelecionarTipo("Pasta Americana"))">
+            <img src="assets/images/designer/pastaAmericana.png" class="btnImg" />
+            <span class="btnTitulo">Pasta</span>
+        </button>
+    </div>
+</div>
+@if (string.IsNullOrEmpty(BoloService.BoloAtual.cobertura?.tipo))
+{
+}
+else
+{
+    @if (BoloService.BoloAtual.cobertura.tipo.Equals("Chantilly"))
+    {
+        <div class="campoExtra">
+            <label>Deseja topo de papel de arroz?</label>
+            <input type="checkbox" @bind="BoloService.BoloAtual.cobertura.papelArroz" />
+        </div>
+        @if (BoloService.BoloAtual.cobertura.papelArroz)
+        {
+            <div class="campoExtra">
+                <label>Qual o tema do papel de arroz e paleta de cores do Chantilly?</label>
+                <input type="text"
+                class="inputCampo @(string.IsNullOrEmpty(erroTema) ? "" : "erro")"
+                       @bind="@BoloService.BoloAtual.cobertura.tema"
+                @onblur="AtualizarTema" />
+            </div>
+        }
+        else
+        {
+            <div class="campoExtra">
+                <label>Qual a cor ou paleta de cores do Chantilly?</label>
+                <input type="text"
+                       class="inputCampo"
+                       @bind="@BoloService.BoloAtual.cobertura.tema"
+                       @onblur="AtualizarTema" />
+            </div>
+        }
+    }
+    else 
+    {
+        <div class="campoExtra">
+            <label>Qual o tema do bolo?</label>
+            <input type="text"
+                   class="inputCampo"
+                   @bind="@BoloService.BoloAtual.cobertura.tema"
+                   @onblur="AtualizarTema" />
+        </div>
+    } 
+   
+    @if (!string.IsNullOrEmpty(erroTema))
+    {
+        <div class="erroMensagem">@erroTema</div>
+    }
+}
+
+@code {
+    [CascadingParameter]
+    public Designer designer { get; set; }
+    private Cobertura cobertura = new();
+    private string tipoSelecionado = "";
+    private string erroTema = "";
+
+    private void SelecionarTipo(string tipo) {
+        if (!tipoSelecionado.Equals(tipo)) // Desmarca se já estiver selecionado
+        {
+            tipoSelecionado = tipo;
+            BoloService.BoloAtual.cobertura.tipo = tipo;
+            //designer.AvisaModeloAtualizado();
+        }
+        else {
+            tipoSelecionado = ""; // Desseleciona se o mesmo botão for clicado novamente
+            BoloService.AtualizarPropriedadeBolo(nameof(Bolo.cobertura), new Cobertura()); // Limpa no modelo
+        }
+        StateHasChanged();
+    }
+
+    private void AtualizarTema() {
+
+        var novoTema = BoloService.BoloAtual.cobertura.tema?.Trim();
+
+        if (string.IsNullOrWhiteSpace(novoTema) || novoTema.Length < 3 || novoTema.Length > 60) {
+            erroTema = "Por favor, descreva o tema com pelo menos 3 e menos de 60 caracteres.";
+            return;
+        }
+        else
+        {
+            erroTema = "";
+            designer.AvisaModeloAtualizado();
+        }
+        
+    }
+}

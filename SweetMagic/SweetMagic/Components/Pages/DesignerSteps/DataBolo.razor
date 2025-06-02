@@ -1,0 +1,44 @@
+﻿@using MudBlazor
+@using MudBlazor.Services
+@using SweetMagic.Helpers
+@using SweetMagic.Models
+@inject BoloService BoloService
+
+<h3>Para qual data você precisa do bolo?</h3>
+<MudDatePicker Label="Data de entrega"
+MinDate="@DateTime.Today.AddDays(1)"
+Required="true"
+RequiredError="Por favor, selecione uma data válida"
+DateFormat="dd/MM/yyyy"
+DateChanged="DataAlterada" />
+
+@code {
+    [CascadingParameter]
+    public Designer designer { get; set; }
+
+    private bool dataValida = true;
+    private DateTime? dataEntrega { get; set; }
+
+    private bool ValidarData(DateTime? data) {
+        if (data.HasValue && data.Value.Date > DateTime.Today)
+            return true;
+
+        return false;
+    }
+
+    private void DataAlterada(DateTime? data)
+    {
+        if (!data.HasValue)
+        {
+            return;
+        }
+        if (!ValidarData(data))
+        {
+            return;
+        }
+        dataEntrega = data.Value;
+        BoloService.BoloAtual.dataEntrega = dataEntrega.Value;
+        designer.AvisaModeloAtualizado();
+    }
+
+}

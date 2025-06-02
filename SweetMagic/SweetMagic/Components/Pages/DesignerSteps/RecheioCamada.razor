@@ -1,0 +1,70 @@
+﻿@using SweetMagic.Helpers
+@using SweetMagic.Models
+@inject BoloService BoloService
+
+<h3>Qual será o sabor do recheio da camada @numCamadaAtual ?</h3>
+<div class="btnContainerRollable">
+    @foreach(var sabor in ListaSaboresRecheio)
+    {
+        <div class="btnGroup">
+            <button class="btn @(saborEscolhido.Equals(sabor.NomeSabor) ? " selecionado" : "" )"
+                    @onclick="@(() => SelecionarSabor(numCamadaAtual, sabor.NomeSabor!))">
+                <img src="@sabor.ImagemSabor" class="btnImg" />
+                <span class="btnTitulo">@sabor.NomeSabor</span>
+            </button>
+        </div>
+    }
+</div>
+<button class="btn seletorCamada"
+@onclick="ProximaCamada"
+disabled="@camadaMaxima">
+    <span class="btnTitulo seletorCamada">Próxima camada</span>
+</button>
+@code {
+    [CascadingParameter]
+    public Designer? designer { get; set; }
+
+    private List<Camada>? camadasBolo = new List<Camada>();
+    private int numCamadaAtual = 1;
+    private string saborEscolhido = "";
+    private bool camadaMaxima = true;
+
+    private void SelecionarSabor(int ordemCamada, string saborRecheio) {
+        if (saborEscolhido != saborRecheio) // Desmarca se já estiver selecionado
+        {
+            saborEscolhido = saborRecheio;
+            camadasBolo = BoloService.BoloAtual.camadas;
+            Camada camadaAtual = camadasBolo.Find(c => c.ordem == ordemCamada)!;
+            camadaAtual.saborRecheio = saborRecheio;
+            if (camadasBolo.Count == numCamadaAtual) {
+                designer!.AvisaModeloAtualizado();
+            }
+            else {
+                camadaMaxima = false;
+            }
+        }
+        else {
+            saborEscolhido = ""; // Desseleciona se o mesmo botão for clicado novamente
+            BoloService.AtualizarPropriedadeBolo(nameof(Bolo.camadas), new List<Camada>()); // Limpa o peso no modelo
+        }
+        StateHasChanged();
+    }
+
+    private static List<Sabor> ListaSaboresRecheio = new List<Sabor>()
+        {
+        new Sabor { NomeSabor = "Brigadeiro", ImagemSabor = "assets/images/designer/brigadeiro.png" },
+        new Sabor { NomeSabor = "Doce de Leite", ImagemSabor = "assets/images/designer/doceLeite.png" },
+        new Sabor { NomeSabor = "Leite Ninho", ImagemSabor = "assets/images/designer/leiteNinho.png" },
+        new Sabor { NomeSabor = "Prestígio", ImagemSabor = "assets/images/designer/prestigio.png" },
+        new Sabor { NomeSabor = "Creme de Avelã", ImagemSabor = "assets/images/designer/nutella.png" },
+        new Sabor { NomeSabor = "Frutas", ImagemSabor = "assets/images/designer/frutas.png" },
+        new Sabor { NomeSabor = "Chocolate", ImagemSabor = "assets/images/designer/chocolate.png" }
+    };
+
+    private void ProximaCamada() {
+        camadaMaxima = true;
+        numCamadaAtual++;
+        saborEscolhido = "";
+        StateHasChanged();
+    }
+}
