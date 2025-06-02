@@ -5,6 +5,7 @@
     text-align: center;
     margin: auto;
     width: 40%;
+    overflow-y: auto;
     /* height: 100%; Removi a altura fixa para se adaptar ao conteúdo */
 }
 
@@ -19,6 +20,7 @@
     gap: 2rem;
     margin-bottom: 1.5rem;
     text-align: left;
+    overflow-y: auto;
 }
 
 .infoColumn {
@@ -65,3 +67,76 @@
         background-color: #fbb3c5;
         transform: scale(1.05);
     }
+
+.whatsappExport {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.whatsappIcon {
+    width: 35px; /* ajuste o tamanho como quiser */
+    height: 35px;
+    vertical-align: middle;
+    margin-right: 0;
+}
+
+.whatsappButton {
+    background-color: #ffc7d4;
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .whatsappButton:hover {
+        background-color: #fbb3c5;
+        transform: scale(1.05);
+    }
+
+/* VERSÃO MOBILE */
+@media (max-width: 768px) {
+
+        .cakeDetailsPage {
+            width: 90%;
+            padding: 1rem;
+            margin: 0.5rem auto;
+            max-height: calc(90dvh - 100px);
+            overflow-y: auto;
+        }
+
+        .cakeDetailsPage .detailsContainer {
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cakeDetailsPage .infoColumn,
+        .cakeDetailsPage .layersSummary {
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        .cakeDetailsPage .layersSummary {
+            margin-top: 0.5rem;
+        }
+
+        .cakeDetailsPage .actionsContainer {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cakeDetailsPage .editButton,
+        .cakeDetailsPage .deleteButton {
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        .boloImage {
+            max-width: 300px;
+            height: 30vh;
+            margin-bottom: 1rem;
+        }
+}

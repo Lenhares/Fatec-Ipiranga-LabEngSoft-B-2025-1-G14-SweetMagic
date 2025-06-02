@@ -2,8 +2,10 @@
 @rendermode InteractiveServer
 @layout SweetMagic.Components.Layout.MainLayout
 @using SweetMagic.Models
+@using SweetMagic.Services
 @using SweetMagic.Helpers
 @inject BoloService BoloService
+@inject UserService UserService
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
@@ -53,6 +55,15 @@
             <button class="deleteButton" @onclick="ExcluirBolo">Excluir bolo</button>
         </div>
     }
+
+    @if (bolo != null) {
+        <div class="whatsappExport">
+            <button class="whatsappButton" @onclick="ExportarParaWhatsApp">
+                Exportar para WhatsApp
+                <img src="/assets/images/whatsapp.png" alt="WhatsApp" class="whatsappIcon" />
+            </button>
+        </div>
+    }
 </div>
 
 @code {
@@ -64,6 +75,10 @@
     private Bolo? bolo { get; set; }
 
     protected override async Task OnInitializedAsync() {
+
+        if (!UserService.Logado) {
+            Navigation.NavigateTo("/");
+        }
         Layout!.setPageName("Cake Details");
         bolo = await BoloService.ObterBoloPorIdAsync(Id);
     }
@@ -84,4 +99,44 @@
             }
         }
     }
+
+    private async Task ExportarParaWhatsApp() {
+        if (bolo == null) return;
+
+        var mensagem = $"*Detalhes do Bolo* \n";
+        mensagem += $"Título: {bolo.titulo}\n";
+        mensagem += $"Peso: {bolo.peso} kg\n";
+        mensagem += $"Tipo: {bolo.tipo}\n";
+        mensagem += $"Data de Entrega: {bolo.dataEntrega:dd/MM/yyyy}\n";
+
+        if (bolo.cobertura != null) {
+            mensagem += $"Cobertura: {bolo.cobertura.tipo}\n";
+            if (!string.IsNullOrEmpty(bolo.cobertura.tema)) {
+                mensagem += $"Tema da Cobertura: {bolo.cobertura.tema}\n";
+            }
+            mensagem += $"Papel Arroz: {(bolo.cobertura.papelArroz ? "Sim" : "Não")}\n";
+        }
+
+        if (bolo.camadas != null && bolo.camadas.Any()) {
+            mensagem += "Camadas:\n";
+            foreach (var camada in bolo.camadas.OrderBy(c => c.ordem)) {
+                mensagem += $"- Camada {camada.ordem}: Massa - {camada.saborMassa}, Recheio - {camada.saborRecheio}\n";
+            }
+        }
+
+        // // Inclui o link da imagem, se existir
+        // if (!string.IsNullOrEmpty(bolo.imagemFinal)) {
+        //     mensagem += $"\nImagem: {bolo.imagemFinal}\n";
+        // }
+
+        // Codificar a mensagem para URL (evitar erros com caracteres especiais)
+        var mensagemCodificada = Uri.EscapeDataString(mensagem);
+
+        // Montar o link para WhatsApp sem contato específico
+        var url = $"https://wa.me/?text={mensagemCodificada}";
+
+        // Abrir no navegador (ou na aba atual)
+        await JS.InvokeVoidAsync("open", url, "_blank");
+    }
+
 }

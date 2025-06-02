@@ -101,57 +101,86 @@ main {
         }
 
 @media (max-width: 640.98px) {
+    body {
+        overflow: hidden;
+    }
+
+    /* Container principal - agora em 2 linhas distintas */
     .top-row-visible {
+        display: flex;
         flex-direction: column;
+        max-height: none; /* Remove a limitação de altura */
         align-items: center;
-        padding: 10px 5px;
+        padding: 5px 0;
     }
 
-    .top-row-disabled {
-        display: none;
+    .navBtnDiv {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
     }
 
-    /* Center logo and header */
+    .logoutDiv {
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        width:100%;
+    }
+
+    /* Linha 1 - Logo (mantendo seu tamanho atual) */
     .mainLogo {
-        display: flex; /* Use flexbox for centering */
-        justify-content: center; /* Center the logo horizontally */
-        align-items: center; /* Center the logo vertically, if needed */
-        margin: 0 auto; /* Ensure it's centered in the parent */
-        position: relative; /* Retain positioning context */
-        width: 100%; /* Optional: Set width to ensure it takes full space */
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
 
     .logo {
-        width: 100px; /* Smaller logo for mobile */
-        text-align: center;
-        margin-right: 0;
-        height: auto;
+        width: 75px;
+        height: 55px;
+        margin: 0 auto;
     }
 
-    #header {
-        display: none;
-        font-size: 1.5rem; /* Responsive font size for mobile */
-        margin: 10px 0; /* Add margin to avoid overlap */
+    .navbar{
+        width: 100%;
+        justify-content: center;
     }
 
-    /* Stack buttons in a single column for mobile */
     .ulnavbar, .ulLogout {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        justify-content: center;
     }
 
-    .nav-btn, .logout-btn {
-        font-size: 0.9rem; /* Adjust button size */
-        padding: 0.5rem 1rem;
-        margin: 5px 0; /* Add space between stacked buttons */
+    .nav-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        margin: 0 !important; /* Remove margens verticais */
+        white-space: nowrap; /* Evita quebra de texto */
     }
 
-    /* Center the "Sair" button below other navigation buttons */
-    .logoutDiv {
-        width: 100%;
-        text-align: center;
-        margin-top: 10px;
+    .logout-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 1rem;
+        margin-top: 0.2rem;
+    }
+
+    /* Esconde elementos não necessários */
+    #header, .mainHeaderDiv {
+        display: none !important;
+    }
+
+    .navbar, .logoutDiv {
+        margin: 0;
+        padding: 0;
+    }
+
+    .content {
+        max-height: calc(85vh - 10px);
+        overflow-y: auto;
     }
 }
 

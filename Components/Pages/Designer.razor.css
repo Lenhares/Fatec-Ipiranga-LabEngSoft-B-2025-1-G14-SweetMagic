@@ -73,3 +73,67 @@
     transition: none; /* Sem transição */
 }
 
+@media (max-width: 768px) {
+    /* Container principal com margens sutis */
+    .background-box {
+        width: calc(90vw - 20px); /* 10px de margem em cada lado */
+        max-height: calc(90vh - 20px); /* Altura máxima com espaço acima/abaixo */
+        min-height: 70vh;
+        padding: 1rem;
+        margin: 10px auto; /* Margem externa sutil */
+        position: relative;
+        overflow-y: auto; /* Permitir scroll vertical no container principal */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        border-radius: 12px; /* Suaviza as bordas */
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Destaque visual */
+        background-color: white;
+    }
+
+    .restartBtn {
+        display: block; /* Transforma em bloco para centralização */
+        margin: 0 auto 1rem auto !important; /* Centraliza horizontalmente */
+        width: 90%; /* Largura generosa */
+        max-width: 250px; /* Largura máxima */
+    }
+
+    /* Container de conteúdo rolável */
+    .scrollable-content {
+        flex: 1;
+        width: 100%;
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: visible; /* Permitir scroll horizontal aqui também, para garantir */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Container dos componentes com scroll horizontal */
+    .component-container {
+        width: fit-content; /* Ajusta a largura ao conteúdo interno */
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 0 0.5rem; /* Padding lateral reduzido */
+        display: flex; /* Para que os itens internos fiquem lado a lado */
+        flex-direction: column; /* Adicionado: Organiza os itens verticalmente */
+        align-items: center; /* Adicionado: Centraliza os itens horizontalmente (opcional) */
+    }
+
+    /* Ajuste fino para os botões */
+    .navegacaoDesigner {
+        position: sticky; /* Manter sticky */
+        bottom: 0;
+        margin-top: 1rem; /* Empurra para o final dentro do flex container */
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-sizing: border-box;
+        z-index: 1000;
+        background-color: white; /* Garante que o fundo seja branco */
+        border-top: 1px solid #f0f0f0;
+    }
+}

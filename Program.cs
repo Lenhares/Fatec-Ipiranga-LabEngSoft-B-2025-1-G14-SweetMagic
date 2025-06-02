@@ -9,10 +9,9 @@ using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
 //builder.Services.AddDbContext<AppDbContext>(options =>
-   // options.UseSqlServer("Server=localhost;Database=SweetMagic;User Id=sweetMagicApp;Password=batataepao2409@;TrustServerCertificate=True;"));
+// options.UseSqlServer("Server=localhost;Database=SweetMagic;User Id=sweetMagicApp;Password=batataepao2409@;TrustServerCertificate=True;"));
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 

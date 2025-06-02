@@ -12,7 +12,11 @@
 <CascadingValue Value="this">
     <div class="background-box">
         <button class="restartBtn" @onclick="Reset">Recomeçar</button>
-        <DynamicComponent Type="@ObterComponenteAtual()" />
+        <div class="scrollable-content">
+            <div class="component-container">
+                <DynamicComponent Type="@ObterComponenteAtual()" />
+            </div>
+        </div>               
         <div class="navegacaoDesigner">
             <button class="returnBtn" @onclick="Return" disabled="@(etapaAtualIndex == 1)">Voltar</button>
             <button class="nextBtn" @onclick="Next" disabled="@(!modeloAtualizado)">Próximo</button>
@@ -32,12 +36,18 @@
     private bool carregandoBolo = false; // Flag para controlar a carga do bolo
 
     protected override void OnInitialized() {
+
         base.OnInitialized();
         Layout!.setPageName("Cake designer");
     }
 
     protected override async Task OnParametersSetAsync() {
         
+        if (!UserService.Logado) {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
         //Valor de ID definido através da URI
         if (Id.HasValue && !carregandoBolo && BoloService.BoloAtual.Id != Id.Value) {
 

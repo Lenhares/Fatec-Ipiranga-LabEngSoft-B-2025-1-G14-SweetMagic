@@ -9,8 +9,12 @@
     border-radius: 10px;
     text-align: center;
     margin: auto;
-    width: 40%;
-    height: 100%;
+    width: 90%;
+    max-width: 800px;
+    height: auto;
+    box-sizing: border-box;
+    max-height: calc(95dvh - 100px);
+    overflow-y: auto;
 }
 
 .listaBolos {
@@ -18,6 +22,7 @@
     flex-direction: column;
     align-items: center; /* Centraliza os cards */
     gap: 1rem;
+    
 }
 
 .actionBtn {
@@ -34,7 +39,7 @@
 .boloCard {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     background-color: #ffc7d4;
     border-radius: 12px;
     border: 1px solid black;
@@ -42,7 +47,8 @@
     margin-bottom: 12px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 600px;
+    max-width: 100%;
+    flex-wrap: nowrap;
 }
 
 .boloCardContent {
@@ -55,6 +61,7 @@
 .boloImg {
     height: 90px;
     width: auto;
+    max-width: 100%;
 }
 
 .boloTitulo {
@@ -91,4 +98,53 @@
     font-size: 20px;
     font-weight: 350;
     font-family: 'Segoe UI';
+}
+
+@media (max-width: 600px) {
+
+    .background-box {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(90dvh - 100px);
+        overflow-y: auto;
+    }
+
+    .listaBolos {
+        flex-grow: 1;
+        overflow-y: auto;
+        margin-bottom: 2rem;
+    }
+
+    .boloCard {
+        align-items: center;
+    }
+
+    .boloImg {
+        height: 50px;
+    }
+
+    .lupaIcon {
+        height: 30px;
+        width: 30px;
+    }
+
+    .boloTitulo {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .actionBtn {
+        padding: 0.5rem 2rem; /* Reduzir padding em botões */
+        font-size: 0.9rem;
+    }
+
+    .background-box {
+        padding: 1rem;
+    }
+
+    .visualizarTexto {
+        font-size: 0.8rem;
+        font-weight: 350;
+        font-family: 'Segoe UI';
+    }
 }

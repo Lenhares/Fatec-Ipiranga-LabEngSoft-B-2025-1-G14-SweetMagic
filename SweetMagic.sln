@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SweetMagic", "SweetMagic.csproj", "{55E2E631-ABF6-4F05-9E61-FD7EFD50AF5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SweetMagicTests", "..\SweetMagicTests\SweetMagicTests.csproj", "{C3452088-0D95-494F-B2E1-67B65AB333F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{55E2E631-ABF6-4F05-9E61-FD7EFD50AF5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55E2E631-ABF6-4F05-9E61-FD7EFD50AF5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55E2E631-ABF6-4F05-9E61-FD7EFD50AF5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3452088-0D95-494F-B2E1-67B65AB333F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3452088-0D95-494F-B2E1-67B65AB333F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3452088-0D95-494F-B2E1-67B65AB333F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3452088-0D95-494F-B2E1-67B65AB333F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
